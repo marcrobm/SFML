@@ -5,8 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
-#ifndef GL_SRGB8_ALPHA8
-#define GL_SRGB8_ALPHA8 0x8C43
+#ifndef GL_RGBA32F
+#define GL_RGBA32F 0x8C43
 #endif
 
 
@@ -34,7 +34,7 @@ int main()
 
         // Create a sprite for the background
         sf::Texture backgroundTexture;
-        backgroundTexture.setSrgb(sRgb);
+        backgroundTexture.setRGBA32F(sRgb);
         if (!backgroundTexture.loadFromFile("resources/background.jpg"))
             return EXIT_FAILURE;
         sf::Sprite background(backgroundTexture);

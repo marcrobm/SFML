@@ -94,7 +94,7 @@ public:
     /// \return True if creation was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool create(unsigned int width, unsigned int height);
+    bool create(unsigned int width, unsigned int height,bool rgba32f = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Load the texture from a file on disk
@@ -437,17 +437,17 @@ public:
     /// \see isSrgb
     ///
     ////////////////////////////////////////////////////////////
-    void setSrgb(bool sRgb);
+    void setRGBA32F(bool rgba32f);
 
     ////////////////////////////////////////////////////////////
-    /// \brief Tell whether the texture source is converted from sRGB or not
+    /// \brief Tell whether the texture source is converted from RGBA32F or not
     ///
-    /// \return True if the texture source is converted from sRGB, false if not
+    /// \return True if the texture source is converted from RGBA32F, false if not
     ///
-    /// \see setSrgb
+    /// \see setRGBA32F
     ///
     ////////////////////////////////////////////////////////////
-    bool isSrgb() const;
+    bool isRGBA32F() const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Enable or disable repeating
@@ -620,12 +620,13 @@ private:
     Vector2u     m_actualSize;    ///< Actual texture size (can be greater than public size because of padding)
     unsigned int m_texture;       ///< Internal texture identifier
     bool         m_isSmooth;      ///< Status of the smooth filter
-    bool         m_sRgb;          ///< Should the texture source be converted from sRGB?
+    bool         m_RGB32F;          ///< Should the texture source be converted from sRGB?
     bool         m_isRepeated;    ///< Is the texture in repeat mode?
     mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation
     bool         m_fboAttachment; ///< Is this texture owned by a framebuffer object?
     bool         m_hasMipmap;     ///< Has the mipmap been generated?
     Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
+    bool rgba32f;
 };
 
 } // namespace sf

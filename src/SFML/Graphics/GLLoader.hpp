@@ -359,7 +359,7 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_SLUMINANCE8_EXT 0x8C47
 #define GL_SLUMINANCE_ALPHA_EXT 0x8C44
 #define GL_SLUMINANCE_EXT 0x8C46
-#define GL_SRGB8_ALPHA8_EXT 0x8C43
+#define GL_RGBA32F_EXT 0x8C43
 #define GL_SRGB8_EXT 0x8C41
 #define GL_SRGB_ALPHA_EXT 0x8C42
 #define GL_SRGB_EXT 0x8C40
@@ -867,6 +867,7 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_RGBA2 0x8055
 #define GL_RGBA4 0x8056
 #define GL_RGBA8 0x8058
+#define GL_RGBA32F 0x8814
 #define GL_RGBA_MODE 0x0C31
 #define GL_RIGHT 0x0407
 #define GL_S 0x2000

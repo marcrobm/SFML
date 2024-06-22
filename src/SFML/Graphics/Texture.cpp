@@ -64,7 +64,7 @@ m_size         (0, 0),
 m_actualSize   (0, 0),
 m_texture      (0),
 m_isSmooth     (false),
-m_sRgb         (false),
+m_RGB32F         (false),
 m_isRepeated   (false),
 m_pixelsFlipped(false),
 m_fboAttachment(false),
@@ -80,7 +80,7 @@ m_size         (0, 0),
 m_actualSize   (0, 0),
 m_texture      (0),
 m_isSmooth     (copy.m_isSmooth),
-m_sRgb         (copy.m_sRgb),
+m_RGB32F         (copy.m_RGB32F),
 m_isRepeated   (copy.m_isRepeated),
 m_pixelsFlipped(false),
 m_fboAttachment(false),
@@ -89,7 +89,7 @@ m_cacheId      (getUniqueId())
 {
     if (copy.m_texture)
     {
-        if (create(copy.getSize().x, copy.getSize().y))
+        if (create(copy.getSize().x, copy.getSize().y, copy.m_RGB32F))
         {
             update(copy);
 
@@ -120,7 +120,7 @@ Texture::~Texture()
 
 
 ////////////////////////////////////////////////////////////
-bool Texture::create(unsigned int width, unsigned int height)
+bool Texture::create(unsigned int width, unsigned int height, bool rgb32f)
 {
     // Check if texture parameters are valid before creating it
     if ((width == 0) || (height == 0))
@@ -154,6 +154,7 @@ bool Texture::create(unsigned int width, unsigned int height)
     m_actualSize    = actualSize;
     m_pixelsFlipped = false;
     m_fboAttachment = false;
+    m_RGB32F        = rgb32f;
 
     // Create the OpenGL texture if it doesn't exist yet
     if (!m_texture)
@@ -184,7 +185,7 @@ bool Texture::create(unsigned int width, unsigned int height)
 
     static bool textureSrgb = GLEXT_texture_sRGB;
 
-    if (m_sRgb && !textureSrgb)
+    if (m_RGB32F && !textureSrgb)
     {
         static bool warned = false;
 
@@ -200,12 +201,17 @@ bool Texture::create(unsigned int width, unsigned int height)
             warned = true;
         }
 
-        m_sRgb = false;
+        m_RGB32F = false;
     }
 
     // Initialize the texture
     glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-    glCheck(glTexImage2D(GL_TEXTURE_2D, 0, (m_sRgb ? GLEXT_GL_SRGB8_ALPHA8 : GL_RGBA), m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+    if(m_RGB32F){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_FLOAT, NULL);
+    }else {
+        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, (m_RGB32F ? GLEXT_GL_RGBA32F : GL_RGBA), m_actualSize.x, m_actualSize.y,
+                             0, (m_RGB32F ? GL_RGBA32F : GL_RGBA), GL_UNSIGNED_BYTE, NULL));
+    }
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : (textureEdgeClamp ? GLEXT_GL_CLAMP_TO_EDGE : GLEXT_GL_CLAMP)));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : (textureEdgeClamp ? GLEXT_GL_CLAMP_TO_EDGE : GLEXT_GL_CLAMP)));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
@@ -632,16 +638,16 @@ bool Texture::isSmooth() const
 
 
 ////////////////////////////////////////////////////////////
-void Texture::setSrgb(bool sRgb)
+void Texture::setRGBA32F(bool rgb32f)
 {
-    m_sRgb = sRgb;
+    m_RGB32F = rgb32f;
 }
 
 
 ////////////////////////////////////////////////////////////
-bool Texture::isSrgb() const
+bool Texture::isRGBA32F() const
 {
-    return m_sRgb;
+    return m_RGB32F;
 }
 
 
@@ -830,7 +836,7 @@ void Texture::swap(Texture& right)
     std::swap(m_actualSize,    right.m_actualSize);
     std::swap(m_texture,       right.m_texture);
     std::swap(m_isSmooth,      right.m_isSmooth);
-    std::swap(m_sRgb,          right.m_sRgb);
+    std::swap(m_RGB32F,          right.m_RGB32F);
     std::swap(m_isRepeated,    right.m_isRepeated);
     std::swap(m_pixelsFlipped, right.m_pixelsFlipped);
     std::swap(m_fboAttachment, right.m_fboAttachment);
